@@ -1,0 +1,9 @@
+[submodule "osv"]
+	path = osv
+	url = https://github.com/cloudius-systems/osv
+[submodule "click"]
+	path = click
+	url = https://github.com/kohler/click
+[submodule "dpdk"]
+	path = dpdk
+	url = https://github.com/syuu1228/dpdk
