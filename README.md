@@ -11,12 +11,12 @@ O script make_image.sh realiza a compilação do DPDK e do Click e disponibiliza
 
 Após a criação da imagem, esta pode ser importada no KVM, onde será executada. É necessário definir pelo menos uma interface para o gerenciamento da plataforma. O comando a seguir pode ser utilizado para a criação de uma máquina virtual utilizando a imagem e com duas interfaces, uma delas para gerência e uma para ser utilizada pelo Click:
 
->sudo virt-install --import --noreboot --name=osv-on-click --ram=192 --vcpus=1 --disk path=/home/leonardo/osv-on-click.qemu,bus=virtio --os-variant=none --accelerate --network=network:default,model=virtio --network=network:default,model=virtio --serial pty --cpu host --rng=/dev/random
+>sudo virt-install --import --noreboot --name=osv-on-click --ram=192 --vcpus=1 --disk path=/home/leonardo/click-on-osv.qemu,bus=virtio --os-variant=none --accelerate --network=network:default,model=virtio --network=network:default,model=virtio --serial pty --cpu host --rng=/dev/random
 
 Este comando gera uma máquina virtual com 192Mb de ram, 1 vcpu e 2 interfaces de rede. Após isso pode se acessar a interface de gerência através do ip mostrado na inicialização do OSv.
 
 ```
-Connected to domain osv-on-click
+Connected to domain click-on-osv
 Escape character is ^]
 OSv v0.24
 1 CPUs detected
@@ -48,9 +48,17 @@ BSD shrinker: unlocked, running
 eth0: 192.168.100.201
 [I/198 dhcp]: Configuring eth0: ip 192.168.100.201 subnet mask 255.255.255.0 gateway 192.168.100.1 MTU 1500
 ```
-
-Um exemplo de arquivo de configuração de uma função virtualizada é:
+#### Upload de novas funções:
+A linha de comando utilizada na imagem padrão lê o arquivo func.click para inicializar o Click, a função padrão é:
 
 >FromDPDKDevice(0) -> Print("OK") -> Discard;
 
 esta função apenas lê os pacotes e os imprime no console do OSv.
+
+Outras funções podem ser encontradas em click_confs.
+
+Para fazer o upload de outras funções, acesse a interface em
+
+>http://ip_da_vm:8000/dashboard/swagger/
+
+Entre em file: File API e selecione POST. Em **path-par** coloque **/func.click** e clique em browse para escolher o arquivo da função a ser adicionado. Por fim clique em **Try it Out!** e reinicie a VM. A nova função será carregada.
