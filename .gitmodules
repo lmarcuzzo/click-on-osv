@@ -1,6 +1,7 @@
-[submodule "osv"]
-	path = osv
-	url = https://github.com/cloudius-systems/osv
+
 [submodule "dpdk"]
 	path = dpdk
 	url = https://github.com/syuu1228/dpdk
+[submodule "osv"]
+	path = osv
+	url = https://github.com/cloudius-systems/osv
