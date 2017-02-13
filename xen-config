@@ -1,0 +1,15 @@
+builder='hvm'
+xen_platform_pci=0
+acpi=1
+apic=1
+boot='c'
+vncdisplay=1
+memory=192
+vcpus=1
+maxcpus=1
+name='osv0'
+disk=['./click-on-osv.img,qcow2,hda,rw']
+serial='pty'
+paused=0
+on_crash='preserve'
+vif=['bridge=virbr0,model=virtio-net','bridge=br0,model=virtio-net','bridge=br1']
