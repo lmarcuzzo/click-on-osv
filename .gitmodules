@@ -4,3 +4,6 @@
 [submodule "osv"]
 	path = osv
 	url = https://github.com/lmarcuzzo/osv
+[submodule "click"]
+	path = click
+	url = https://github.com/lmarcuzzo/click
