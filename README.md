@@ -5,7 +5,11 @@ Este projeto têm como objetivo a execução do [Click Modular Router](https://g
 Além do código e um script para construir a imagem, também é disponibilizada uma imagem pronta para ser usada, case não queira realizar a build.
 
 ### Build:
-O script make_image.sh realiza a compilação do DPDK e do Click e disponibiliza na pasta **img_build** a biblioteca do DPDK (*libintel_dpdk.so*) e o binário do Click (*click*). Estes arquivos, junto com o arquivo de configuração de uma Função Virtual (test.click) são utilizados pelo [Capstan](https://github.com/cloudius-systems/capstan) para construir a imagem da plataforma.
+O script make_binarys.sh realiza a compilação do DPDK e do Click e disponibiliza na pasta **binary** a biblioteca do DPDK (*libintel_dpdk.so*) e o binário do Click (*click*). Estes arquivos, junto com o arquivo de configuração de uma Função Virtual (test.click) são utilizados em um módulo criado para o OSv que realiza a preparaçao da imagem.
+
+Após realizar a compilação, copie os binários para **osv/modules/click**. Dentro desta pasta encontra-se também o arquivo de configuração (**func.click**), e a linha de comando, em **module.py**, caso precise ser alterada.
+
+Para criar a imagem, dentro do diretório do OSv **execute scripts/setup.py** para a instalação dos pacotes e **git submodule update --init --recursive** para a inicialização dos submodules. Após isso crie a imagem com **scripts/build modules=click,httpserver-click_plugin** e execute com **scripts/run -n -v**. Mais informações sobre a compilação e execução do OSv podem ser encontradas na página do [OSv](https://github.com/cloudius-systems/osv).
 
 ### Uso da imagem:
 

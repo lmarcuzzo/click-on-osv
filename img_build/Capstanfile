@@ -1,8 +1,0 @@
-base: cloudius/osv-base
-
-cmdline: "--verbose --maxnic=0 /click --dpdk --no-shconf -c 0x01 -n 1 --log-level 8 -m 64 -- -p 8001 func.click"
-
-files:
-  /libintel_dpdk.so: libintel_dpdk.so
-  /click: click
-  /func.click: func.click
