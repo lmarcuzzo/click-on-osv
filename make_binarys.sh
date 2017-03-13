@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Init Submodules"
-git submodule update --init
+git submodule update --init --recursive
 echo "Building DPDK"
 cd dpdk
 git checkout osv-head
@@ -16,7 +16,7 @@ mkdir -p binary
 cp -fa $RTE_SDK/x86_64-native-osvapp-gcc/lib/libintel_dpdk.so binary/
 #build click
 echo "Building Click"
-git clone https://github.com/lmarcuzzo/click
+#git clone https://github.com/lmarcuzzo/click
 cd click
 ./configure --enable-dpdk --enable-user-multithread --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
 cd userlevel

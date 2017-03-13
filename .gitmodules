@@ -1,9 +1,9 @@
 [submodule "dpdk"]
 	path = dpdk
 	url = https://github.com/syuu1228/dpdk
-[submodule "osv"]
-	path = osv
-	url = https://github.com/lmarcuzzo/osv
 [submodule "click"]
 	path = click
 	url = https://github.com/lmarcuzzo/click
+[submodule "osv"]
+	path = osv
+	url = https://github.com/lmarcuzzo/osv
