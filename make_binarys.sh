@@ -18,7 +18,8 @@ cp -fa $RTE_SDK/x86_64-native-osvapp-gcc/lib/libintel_dpdk.so binary/
 echo "Building Click"
 #git clone https://github.com/lmarcuzzo/click
 cd click
-./configure --enable-dpdk --enable-user-multithread --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
+make clean
+./configure --enable-dpdk --enable-osv --enable-user-multithread --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
 cd userlevel
 make
 cp click ../../binary
