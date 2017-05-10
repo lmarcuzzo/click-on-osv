@@ -15,7 +15,8 @@ Para criar a imagem, dentro do diretório do OSv **execute scripts/setup.py** pa
 
 Após a criação da imagem, esta pode ser importada no KVM, onde será executada. É necessário definir pelo menos uma interface para o gerenciamento da plataforma. O comando a seguir pode ser utilizado para a criação de uma máquina virtual utilizando a imagem e com duas interfaces, uma delas para gerência e uma para ser utilizada pelo Click:
 
->sudo virt-install --import --noreboot --name=osv-on-click --ram=192 --vcpus=1 --disk path=/home/leonardo/click-on-osv.qemu,bus=virtio --os-variant=none --accelerate --network=network:default,model=virtio --network=network:default,model=virtio --serial pty --cpu host --rng=/dev/random
+>
+sudo virt-install --import --noreboot --name=osv-on-click --ram=192 --vcpus=1 --disk path=/home/leonardo/click-on-osv.qemu,bus=virtio --os-variant=none --accelerate --network=network:default,model=virtio --network=network:default,model=virtio --serial pty --cpu host --rng=/dev/random
 
 Este comando gera uma máquina virtual com 192Mb de ram, 1 vcpu e 2 interfaces de rede. Após isso pode se acessar a interface de gerência através do ip mostrado na inicialização do OSv.
 

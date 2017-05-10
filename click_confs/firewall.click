@@ -1,31 +1,42 @@
-//Firewall libera ICMP e TCP que bloqueia UDP, exceto na portas 53 para um ip especifico (192.168.0.15)
+//VNF_HEADER
+//VNF_VERSION: 1.0
+//VNF_ID:b69c308a-9bde-459a-b171-fed5621ce46d
+//VNF_PROVIDER:UFSM
+//VNF_NAME:Stateless Firewall
+//VNF_RELEASE_DATE:2017-04-08 21-45-45
+//VNF_RELEASE_VERSION:1.0
+//VNF_RELEASE_LIFESPAN:2017-06-08 21-45
+//VNF_DESCRIPTION: Example stateless firewall
 
-wani :: FromDevice(0);
-wano :: ToDevice(0);
+//Simple Stateless firewall
+//Based on ClickOS stateless firewall
+//Firewall rules are applied only to packets from Input 0
 
-lani :: FromDevice(1);
-lano :: ToDevice(1);
+in0 :: FromDPDKDevice(0);
+out0 :: ToDPDKDevice(0);
 
+in1 :: FromDPDKDevice(1);
+out1 :: ToDPDKDevice(1);
 
-    //Libera ARP e envia pacotes IP para classificar
-    cw :: Classifier(
-        12/0806, // Pacotes arp p/ out 0 
-        12/0800, // Pacotes IP p/ out 1
-        -        // Outros tipos de pacotes p out 2
-    );
+//L2 Classifier
+cw :: Classifier(
+    12/0806, //ARP to cw[0] 
+    12/0800, //IP to cw[1]
+    -        //Everything else is discarded
+);
+//IP Classifier
+f :: IPClassifier(
+    icmp,       //ICMP Packets to f[0]
+	tcp,       //TCP Packets to f[1]
+	-   //Everything else is discarded
+);
 
-    //Regras IP
-    f :: IPFilter(
-	//Todas regras são apenas para 192.168.0.15
-	deny dst host 192.168.0.15 && icmp, //Libera ICMP
-	allow dst host 192.168.0.15 && tcp, //Libera TCP (d-itg precisa)
-	allow dst host 192.168.0.15 && udp && dst port 53, //Libera UDP porta 53 (DNS)
-	deny all
-    );
+in0 -> cw; //in0 goes to classifier
+cw[0] -> CheckARPHeader(14) -> out1;    //ARP packets pass-through
+cw[1] -> CheckIPHeader(14) -> f;        //IP packets to IP classifier
+cw[2] -> Print("Drop (Not IP or ARP Packet)") -> Discard; //If packet is neither ARP nor IP it is discarded
 
-wani -> cw; //Entrada WAN para classificador
-cw[0] -> CheckARPHeader(14) -> lano;                  // Pacotes ARP passam direto
-cw[1] -> CheckIPHeader(14) -> f;                      // Pacotes IP enviados para o IPFilter
-cw[2] -> Print("Drop (Not IP or ARP Packet)") -> Discard; // Descarta
-f -> lano; // Saida do filtro para rede interna
-lani -> wano; //Saida da rede interna para externa
+f[0] -> Print("ICMP Drop") -> Discard();   //ICMP Packets are dropped
+f[1] -> out1;                   //TCP packets pass to output 1
+f[2] -> Discard();
+in1 -> out0;                   //in1 pass-through to out0
