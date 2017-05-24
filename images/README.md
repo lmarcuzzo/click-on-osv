@@ -17,6 +17,9 @@ Nota-se que o parâmetro **--disk path=** deve ser alterado para o local onde a 
 Para instalar a imagem no VirtualBox, primeiro adicione uma rede exclusiva de hospedeiro no VirtualBox (se não existir). Após isso, importe o arquivo .ova para o VirtualBox e entre nas configurações de rede da VM.
 O Adaptador 1 é a placa que será usada para gerência. Conecte ele a interface exclusiva de hospedeiro,e defina o tipo de placa como **virtio**. Os outros adaptadores serão utilizados pelo Click, então podem estar conectados a outras placas, desde que estejam com o tipo de placa como **virtio** e o modo promíscuo em *Permitir Tudo*.
 
+## Instalação no Xen
+No momento, a imagem qcow2 pode ser instalada em um hypervisor Xen. Uma configuração de exemplo pode ser vista em [xen-config](./xen-config), no entanto ainda não é completamente suportada.
+
 # Utilização
 
 Após a VM ser instalada, o console dela deve ser acessado para identificar o endereço IP de gerência.
@@ -54,4 +57,4 @@ A interface Web do click é uma extensão da interface do OSv, sendo assim é cr
 Através da interface, o usuário têm acesso ao ciclo de vida, tanto da VM como da VNF, sendo capaz de inicializar, parar e reiniciar a VNF, e reiniciar ou desligar a VM.
 
 #### Estatísticas e informações da VNF:
-É possível
+Também é possível visualizar informações sobre a VNF sendo executada (de acordo com a especificação da ETSI), e estatísticas de uso de CPU, disco, memória e rede da VM.

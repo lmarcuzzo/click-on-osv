@@ -12,4 +12,4 @@ disk=['./click-on-osv.img,qcow2,hda,rw']
 serial='pty'
 paused=0
 on_crash='preserve'
-vif=['bridge=virbr0,model=virtio-net','bridge=br0,model=virtio-net','bridge=br1']
+vif=['bridge=virbr0,model=virtio-net','bridge=br0,model=virtio-net']
