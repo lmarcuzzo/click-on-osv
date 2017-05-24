@@ -9,7 +9,7 @@ cd ..
 export RTE_SDK=`readlink -f dpdk`
 export RTE_TARGET=x86_64-native-osvapp-gcc
 OSV_SDK=`readlink -f osv`
-cd $RTE_SDK 
+cd $RTE_SDK
 make install T=$RTE_TARGET OSV_SDK=$OSV_SDK
 cd ..
 mkdir -p binary
@@ -23,3 +23,13 @@ make clean
 cd userlevel
 make
 cp click ../../binary
+cd ../../
+echo "Building OSv"
+cp binary/* osv/modules/click
+cd osv
+./scripts/setup.py
+git submodule update --init --recursive
+./scripts/build modules=click,httpserver-click_plugin
+./scripts/gen-vbox-ova.sh
+cp build/latest/usr.img ../images/click-on-osv.img
+#cp build/latest/

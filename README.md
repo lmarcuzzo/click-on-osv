@@ -1,69 +1,88 @@
 # Click on OSv
 
-Este projeto têm como objetivo a execução do [Click Modular Router](https://github.com/kohler/click) no Unikernel [OSv](https://github.com/cloudius-systems/osv). O Click é compilado como uma aplicação de nível de usuário com suporte a uma versão modificada do [Intel DPDK](https://github.com/syuu1228/dpdk) que executa no OSv.
+Este projeto têm como objetivo a execução do [Click Modular Router](https://github.com/kohler/click) no Unikernel [OSv](https://github.com/cloudius-systems/osv). O Click é compilado como uma aplicação de nível de usuário com suporte a uma versão modificada do [Intel DPDK](https://github.com/syuu1228/dpdk) executando no OSv.
 
-Além do código e um script para construir a imagem, também é disponibilizada uma imagem pronta para ser usada, case não queira realizar a build.
+## Limitações
+A compilação foi testada apenas em ambiente Debian 8. Em versões superiores a 2.19 do Glib pode ocorrer um problema ao criar o link entre o binário do click e a lib do dpdk. Isto pode ser verificado executando o comando ```ldd -d click``` no binário do click. Deve aparecer uma biblioteca libintel_dpdk.so
 
-### Build:
-O script make_binarys.sh realiza a compilação do DPDK e do Click e disponibiliza na pasta **binary** a biblioteca do DPDK (*libintel_dpdk.so*) e o binário do Click (*click*). Estes arquivos, junto com o arquivo de configuração de uma Função Virtual (test.click) são utilizados em um módulo criado para o OSv que realiza a preparaçao da imagem.
+Também é necessário que a versão do GCC seja superior a versão 4.8.
 
-Após realizar a compilação, copie os binários para **osv/modules/click**. Dentro desta pasta encontra-se também o arquivo de configuração (**func.click**), e a linha de comando, em **module.py**, caso precise ser alterada.
 
-Para criar a imagem, dentro do diretório do OSv **execute scripts/setup.py** para a instalação dos pacotes e **git submodule update --init --recursive** para a inicialização dos submodules. Após isso crie a imagem com **scripts/build modules=click,httpserver-click_plugin** e execute com **scripts/run -n -v**. Mais informações sobre a compilação e execução do OSv podem ser encontradas na página do [OSv](https://github.com/cloudius-systems/osv).
+## Uso
 
-### Uso da imagem:
+Uma versão pré-compilada está disponível para download como um disco "qcow2" ou como uma appliance "ova" para VirtualBox. Estas imagens e instruções podem ser encontradas em [images](./images).
 
-Após a criação da imagem, esta pode ser importada no KVM, onde será executada. É necessário definir pelo menos uma interface para o gerenciamento da plataforma. O comando a seguir pode ser utilizado para a criação de uma máquina virtual utilizando a imagem e com duas interfaces, uma delas para gerência e uma para ser utilizada pelo Click:
 
->
-sudo virt-install --import --noreboot --name=osv-on-click --ram=192 --vcpus=1 --disk path=/home/leonardo/click-on-osv.qemu,bus=virtio --os-variant=none --accelerate --network=network:default,model=virtio --network=network:default,model=virtio --serial pty --cpu host --rng=/dev/random
+## Compilação:
 
-Este comando gera uma máquina virtual com 192Mb de ram, 1 vcpu e 2 interfaces de rede. Após isso pode se acessar a interface de gerência através do ip mostrado na inicialização do OSv.
+O script make_binarys.sh realiza a compilação do DPDK, do Click e do OSv e disponibiliza na pasta **binary** a biblioteca do DPDK (*libintel_dpdk.so*) e o binário do Click (*click*), além de uma imagem em (*images*). Configurações de exemplo podem ser encontradas na pasta [click_confs](click_confs)
+
+Antes de iniciar a compilação, é necessário baixar todos os submodulos, executando o comando na pasta raiz:
+```
+git submodule update --init --recursive
+```
+
+
+## DPDK
+Para a compilação do DPDK:
+
+Na pasta raiz, iniciar ou atualizar todos os submódulos e definir as variáveis de ambiente para compilação:
 
 ```
-Connected to domain click-on-osv
-Escape character is ^]
-OSv v0.24
-1 CPUs detected
-Firmware vendor: SeaBIOS
-bsd: initializing - done
-VFS: mounting ramfs at /
-VFS: mounting devfs at /dev
-RAM disk at 0x0xffff800001d2f040 (4096K bytes)
-net: initializing - done
-eth0: ethernet address: 52:54:00:46:99:b9
-virtio-blk: Add blk device instances 0 as vblk0, devsize=10737418240
-random: virtio-rng registered as a source.
-vga: Add VGA device instance
-random: intel drng, rdrand registered as a source.
-random: <Software, Yarrow> initialized
-VFS: unmounting /dev
-VFS: mounting zfs at /zfs
-zfs: mounting osv/zfs from device /dev/vblk0.1
-random: device unblocked.
-VFS: mounting devfs at /dev
-VFS: mounting procfs at /proc
-program zpool.so returned 1
-BSD shrinker: event handler list found: 0xffffa000016df980
-	BSD shrinker found: 1
-BSD shrinker: unlocked, running
-[I/28 dhcp]: Waiting for IP...
-[I/28 dhcp]: Waiting for IP...
-[I/198 dhcp]: Server acknowledged IP for interface eth0
-eth0: 192.168.100.201
-[I/198 dhcp]: Configuring eth0: ip 192.168.100.201 subnet mask 255.255.255.0 gateway 192.168.100.1 MTU 1500
+#Inicializar submodulos
+git submodule update --init --recursive
+#Diretório do DPDK
+export RTE_SDK=`readlink -f dpdk`
+#Target do DPDK
+export RTE_TARGET=x86_64-native-osvapp-gcc
+#Diretório do OSv
+export OSV_SDK=`readlink -f osv`
+
 ```
-#### Upload de novas funções:
-A linha de comando utilizada na imagem padrão lê o arquivo func.click para inicializar o Click, a função padrão é:
+Após isso, dentro do diretório do DPDK:
+```
+cd dpdk
+#Fazer checkout da branch do OSv
+git checkout osv-head
+#Compilar
+make install T=$RTE_TARGET OSV_SDK=$OSV_SDK
+```
 
->FromDPDKDevice(0) -> Print("OK") -> Discard;
+Será gerada uma pasta com o nome do target que possui a biblioteca necessária. Copiar ela para [binary](./binary)
+```
+cp -fa x86_64-native-osvapp-gcc/lib/libintel_dpdk.so ../binary
+```
+## Click
+Com as variáveis de ambiente do DPDK e do OSv definidas, e com o DPDK já compilado, dentro da pasta do Click:
 
-esta função apenas lê os pacotes e os imprime no console do OSv.
+```
+cd click
+#Limpar build (se houver)
+make clean
+#Configurar click para compilar com suporte ao DPDK, OSv, e fPIC (para shared library)
+./configure --enable-dpdk --enable-osv --enable-user-multithread --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
+#Compilar aplicação userlevel
+cd userlevel
+make
+#Copiar o binário gerado para a pasta "binary"
+cp -fa click ../../binary
+```
 
-Outras funções podem ser encontradas em click_confs.
+## OSv
+Para compilar o OSv, é necessário ter compilado o Click e o DPDK:
 
-Para fazer o upload de outras funções, acesse a interface em
+```
+#Copiar binarios para pasta de módulos do OSv
+cp binary/* osv/modules/click
+#Executar script para instalar as dependências do OSv
+cd osv
+./scripts/setup.py
+#Inicializar submodulos
+git submodule update --init --recursive
+#Compilar OSv com os módulos do Click e da interface web
+./scripts/build modules=click,httpserver-click_plugin
+```
+No fim, será gerada uma imagem qcow2 em build/latest/usr.img.
+Para gerar um .ova, executar "scripts/gen-vbox-ova.sh"
 
->http://ip_da_vm:8000/dashboard/swagger/
-
-Entre em file: File API e selecione POST. Em **path-par** coloque **/func.click** e clique em browse para escolher o arquivo da função a ser adicionado. Por fim clique em **Try it Out!** e reinicie a VM. A nova função será carregada.
+Mais informações sobre a compilação e execução do OSv podem ser encontradas na página do [OSv](https://github.com/cloudius-systems/osv).
