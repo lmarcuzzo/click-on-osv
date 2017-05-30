@@ -15,7 +15,7 @@ Uma versão pré-compilada está disponível para download como um disco "qcow2"
 
 ## Compilação:
 
-O script make_binarys.sh realiza a compilação do DPDK, do Click e do OSv e disponibiliza na pasta **binary** a biblioteca do DPDK (*libintel_dpdk.so*) e o binário do Click (*click*), além de uma imagem em (*images*). Configurações de exemplo podem ser encontradas na pasta [click_confs](click_confs)
+O script build.sh realiza a compilação do DPDK, do Click e do OSv e disponibiliza na pasta **binary** a biblioteca do DPDK (*libintel_dpdk.so*) e o binário do Click (*click*), além de uma imagem em (*images*). Configurações de exemplo podem ser encontradas na pasta [click_confs](click_confs)
 
 Antes de iniciar a compilação, é necessário baixar todos os submodulos, executando o comando na pasta raiz:
 ```
@@ -29,8 +29,6 @@ Para a compilação do DPDK:
 Na pasta raiz, iniciar ou atualizar todos os submódulos e definir as variáveis de ambiente para compilação:
 
 ```
-#Inicializar submodulos
-git submodule update --init --recursive
 #Diretório do DPDK
 export RTE_SDK=`readlink -f dpdk`
 #Target do DPDK
