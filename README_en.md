@@ -3,7 +3,7 @@
 This project aims to execute the [Click Modular Router](https://github.com/kohler/click) on [OSv](https://github.com/cloudius-systems/osv) Unikernell. The Click module is compiled as an user level application with [Intel DPDK](https://github.com/syuu1228/dpdk) modified version support running on OSv.
 
 ## Limitations
-Compilation has been tested on Debian 8. On environments with Glib > 2.19 an error while linking Click and the DPDK library can occur. This can be tested with ```ldd -d click``` on the Click binary. It should show a libintel_dpdk.so library on the dependencies. GCC has to be at least version 4.8.
+Compilation has been tested on Debian 8. On environments with Glib > 2.19 an error while linking Click and the DPDK library can occur. This can be tested with ```ldd -d click``` on the Click binary. It should show a libintel_dpdk.so library on the dependencies. GCC has to be at least version 4.8. GCC 5.x and 6.x seems to have some issues compiling DPDK.
 
 ## Use
 
@@ -15,6 +15,8 @@ A precompiled version is avaible for download as a "qcow2" disk or an "ova" appl
 
 
 Before compiling, download the submodules. From the root folder, run:
+You should also install any dependence needed by osv before compiling. This can be done
+running scritps/setup.py inside the osv folder.
 
 ```
 git submodule update --init --recursive
@@ -27,7 +29,7 @@ For DPDK's compiling process:
 Environment variables definition at root folder ->
 ```
 #DPDK's Folder
-export RTE_SDK=`readlink -f dpdk`
+export RTE_SDK=`readlink -f osv-dpdk`
 #DPDK's Target
 export RTE_TARGET=x86_64-native-osvapp-gcc
 #OSv's Folder
@@ -36,7 +38,7 @@ export OSV_SDK=`readlink -f osv`
 
 After setting environment variables and initializing submodules ->
 ```
-cd dpdk
+cd osv-dpdk
 #Checkout OSv branch
 git checkout osv-head
 #Compile
