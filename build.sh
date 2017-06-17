@@ -11,6 +11,7 @@ function set_vars_and_deps {
   fi
   echo "Download dependencies"
   $OSV_SDK/scripts/setup.py
+  mkdir -p $COOV_FOLDER/binary
 }
 
 #adapted from https://github.com/syuu1228/osv-dpdk/blob/osv-head/lib/librte_eal/osvapp/capstan/GET
