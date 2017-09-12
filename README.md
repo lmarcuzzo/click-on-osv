@@ -1,4 +1,4 @@
-# Click on OSv
+# GT-FENDE: VNF Server (click-on-osv)
 
 Este projeto têm como objetivo a execução do [Click Modular Router](https://github.com/kohler/click) no Unikernel [OSv](https://github.com/cloudius-systems/osv). O Click é compilado como uma aplicação de nível de usuário com suporte a uma versão modificada do [Intel DPDK](https://github.com/syuu1228/dpdk) executando no OSv.
 
@@ -30,7 +30,7 @@ Na pasta raiz, iniciar ou atualizar todos os submódulos e definir as variáveis
 
 ```
 #Diretório do DPDK
-export RTE_SDK=`readlink -f dpdk`
+export RTE_SDK=`readlink -f osv-dpdk`
 #Target do DPDK
 export RTE_TARGET=x86_64-native-osvapp-gcc
 #Diretório do OSv
@@ -39,7 +39,7 @@ export OSV_SDK=`readlink -f osv`
 ```
 Após isso, dentro do diretório do DPDK:
 ```
-cd dpdk
+cd osv-dpdk
 #Fazer checkout da branch do OSv
 git checkout osv-head
 #Compilar
@@ -58,7 +58,9 @@ cd click
 #Limpar build (se houver)
 make clean
 #Configurar click para compilar com suporte ao DPDK, OSv, e fPIC (para shared library)
-./configure --enable-dpdk --enable-osv --enable-user-multithread --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
+./configure --enable-dpdk --enable-osv --enable-user-multithread --enable-local --enable-wifi --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
+#Refazer lista de elementos
+make elemlist
 #Compilar aplicação userlevel
 cd userlevel
 make

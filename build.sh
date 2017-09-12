@@ -32,7 +32,8 @@ function build_dpdk {
 function build_click {
   echo "Building Click"
   cd click
-  ./configure --enable-dpdk --enable-osv --enable-user-multithread --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
+  ./configure --enable-dpdk --enable-osv --enable-user-multithread --enable-local --enable-wifi --disable-linuxmodule CXXFLAGS="-fPIC -std=gnu++11" CFLAGS="-fPIC" LDFLAGS="-fPIC -std=gnu++11" CPPFLAGS="-fPIC -std=gnu++11"
+  make elemlist
   cd userlevel
   make
   if [ ! -e "click" ]; then
@@ -48,7 +49,7 @@ function build_osv {
   cp binary/* $OSV_SDK/modules/click
   cd $OSV_SDK
   ./scripts/build modules=click,httpserver-click_plugin
-  ./scripts/gen-vbox-ova.sh
+  #./scripts/gen-vbox-ova.sh
   if [ ! -e "$OSV_SDK/build/last/usr.img" ]; then
     echo "Error building OSv"
     exit 1

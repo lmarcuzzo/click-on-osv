@@ -27,7 +27,7 @@ f :: IPClassifier(
     -   //Everything else pass-through
 );
 
-spl :: RatedSplitter(200); //Allows no more than 200 pkt/s
+spl :: RatedSplitter(500); //Allows no more than 200 pkt/s
 
 in0 -> cw; //in0 goes to classifier
 

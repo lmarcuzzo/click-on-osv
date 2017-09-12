@@ -15,6 +15,7 @@ net0out :: ToDPDKDevice(0);
 net1in :: FromDPDKDevice(1);
 net1out :: ToDPDKDevice(1);
 
+// MAC address from ports (bridges) and router
 // Port 0, 08:00:27:19:B9:35, 192.168.121.1
 // Port 1, 08:00:27:5A:A4:77, 192.168.122.1
 
