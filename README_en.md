@@ -75,8 +75,10 @@ cp binary/* osv/modules/click
 #Execute OSv's dependencies setup script
 cd osv
 ./scripts/setup.py
+#Install dependencies for python compilation
+apt-get install libreadline6 libreadline6-dev
 #Compile OSv with Click and Web Interface modules
-./scripts/build modules=click,httpserver-click_plugin
+./scripts/build modules=click,httpserver-click_plugin,python27-fromsource
 ```
 
 Finally, a "qcow2" image will be generated at build/last/usr.img.

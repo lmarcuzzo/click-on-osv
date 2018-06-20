@@ -77,10 +77,12 @@ cp binary/* osv/modules/click
 #Executar script para instalar as dependências do OSv
 cd osv
 ./scripts/setup.py
+#Instalar dependências para compilação do python
+apt-get install libreadline6 libreadline6-dev 
 #Inicializar submodulos
 git submodule update --init --recursive
 #Compilar OSv com os módulos do Click e da interface web
-./scripts/build modules=click,httpserver-click_plugin
+./scripts/build modules=click,httpserver-click_plugin,python27-fromsource
 ```
 No fim, será gerada uma imagem qcow2 em build/latest/usr.img.
 Para gerar um .ova, executar "scripts/gen-vbox-ova.sh"
